@@ -1,28 +1,40 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import PlainTextResponse
+import os
 import json
 
 app = FastAPI()
 
-VERIFY_TOKEN = "temple_verify_token"
+VERIFY_TOKEN = os.getenv(
+    "VERIFY_TOKEN",
+    "temple_verify_token"
+)
 
 @app.get("/")
-async def root():
-    return {"status": "Webhook server running"}
+async def home():
+    return {
+        "status": "Webhook server running"
+    }
 
 @app.get("/webhook")
 async def verify_webhook(request: Request):
 
-    params = request.query_params
+    mode = request.query_params.get("hub.mode")
+    token = request.query_params.get("hub.verify_token")
+    challenge = request.query_params.get("hub.challenge")
 
-    mode = params.get("hub.mode")
-    token = params.get("hub.verify_token")
-    challenge = params.get("hub.challenge")
+    print("Webhook verification request received")
 
     if mode == "subscribe" and token == VERIFY_TOKEN:
-        return PlainTextResponse(content=challenge)
 
-    return {"error": "Verification failed"}
+        print("Webhook verified")
+
+        return PlainTextResponse(challenge)
+
+    return PlainTextResponse(
+        "Verification failed",
+        status_code=403
+    )
 
 @app.post("/webhook")
 async def receive_webhook(request: Request):
