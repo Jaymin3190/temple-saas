@@ -1,10 +1,9 @@
-streamlit
-pandas
-supabase
 fastapi
 uvicorn
 requests
 python-dotenv
-python-multipart
+pandas
+streamlit
 gspread
 google-auth
+sqlite-utils
