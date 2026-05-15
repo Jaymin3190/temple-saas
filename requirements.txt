@@ -1,0 +1,10 @@
+streamlit
+pandas
+supabase
+fastapi
+uvicorn
+requests
+python-dotenv
+python-multipart
+gspread
+google-auth
